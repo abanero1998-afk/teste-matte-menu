@@ -1,148 +1,103 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spritzeria Teste Matte — Menu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root{--bg:#050505;--ink:#f4f1ea;--cyan:#1aa6d6;--cyan2:#3ec4ef;--silver:#c9c4b8;--muted:#9a958a;--card:#0d0d0d;--line:#2a2a2a}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:radial-gradient(1200px 600px at 50% -10%,#1a1a1a 0%,var(--bg) 55%);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;min-height:100vh}
-    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 90px}
-    header.hero{text-align:center;border:1px solid #3a3a3a;padding:28px 16px 22px;background:#0a0a0a}
-    .kicker{letter-spacing:.28em;font-size:12px;color:var(--silver);text-transform:uppercase}
-    h1{font-family:Cinzel,serif;font-size:clamp(28px,6vw,48px);margin:8px 0 4px}
-    .subtitle{font-family:"Playfair Display",serif;font-style:italic;color:var(--cyan);font-size:20px}
-    .toolbar,.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-    button{background:#111;color:var(--ink);border:1px solid #444;padding:8px 12px;border-radius:999px;cursor:pointer;font:inherit}
-    button.active{background:var(--cyan);color:#041018;border-color:var(--cyan);font-weight:700}
-    nav.cats{display:flex;gap:8px;overflow-x:auto;padding:16px 2px 8px;position:sticky;top:0;background:linear-gradient(#050505,#050505f2);z-index:5}
-    nav.cats button{white-space:nowrap}
-    section.cat{margin:22px 0 36px}
-    section.cat h2{font-family:Cinzel,serif;color:var(--cyan);font-size:26px;border-bottom:1px solid #333;padding-bottom:6px;margin-bottom:14px}
-    .note{color:var(--muted);font-size:13px;margin:-8px 0 12px}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-    .card{background:var(--card);border:1px solid var(--line);display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px}
-    .card img{width:92px;height:92px;object-fit:cover;border:1px solid #333}
-    .card h3{font-size:16px}
-    .desc{color:var(--muted);font-size:13px;line-height:1.35;margin-top:4px}
-    .price{margin-top:6px;color:var(--cyan2);font-weight:700}
-    .tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
-    .tag{font-size:11px;border:1px solid #3a5a66;color:#9fd7e8;padding:2px 7px;border-radius:999px}
-    footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px}
-    .legend{margin:18px 0;padding:12px;border:1px solid #333;font-size:13px;color:#cfc9bb;line-height:1.5}
-    .admin{display:none;background:#101010;border:1px dashed #555;padding:16px;margin:18px 0}
-    .admin.open{display:block}
-    .admin label{display:block;font-size:13px;margin:8px 0 4px;color:var(--silver)}
-    .admin input,.admin select,.admin textarea{width:100%;background:#080808;color:#fff;border:1px solid #333;padding:8px}
-    .danger{border-color:#7a2a2a;color:#ffb4b4}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Spritzeria Teste Matte</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800&family=Great+Vibes&family=Playfair+Display:ital,wght@1,700;1,800&family=Source+Sans+3:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#1bb4e0;--ink:#1b1a18;--muted:#4a4741;--glass:rgba(255,255,255,.42);--line:rgba(255,255,255,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;background:radial-gradient(900px 500px at 12% 10%,rgba(90,214,245,.35),transparent 55%),radial-gradient(800px 520px at 88% 18%,rgba(255,210,160,.38),transparent 50%),linear-gradient(165deg,#f4efe6 0%,#d9e7ef 42%,#efe4d4 100%);overflow-x:hidden}
+.scene{position:fixed;inset:0;pointer-events:none;z-index:0;perspective:900px}
+.orb{position:absolute;border-radius:50%;filter:blur(2px);animation:float 14s ease-in-out infinite}
+.orb.a{width:220px;height:220px;left:8%;top:18%;background:radial-gradient(circle at 30% 30%,#fff,#7fd4ea 55%,transparent 70%)}
+.orb.b{width:280px;height:280px;right:4%;top:8%;background:radial-gradient(circle at 30% 30%,#fff,#f0c38a 50%,transparent 70%);animation-duration:19s}
+.orb.c{width:180px;height:180px;left:40%;bottom:10%;background:radial-gradient(circle at 30% 30%,#fff,#b9c7ff 50%,transparent 70%);animation-duration:13s}
+.panel3d{position:absolute;inset:12% 10% auto 10%;height:42%;background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.25);border-radius:28px;transform:rotateX(18deg) rotateY(-12deg);animation:tilt 18s ease-in-out infinite;box-shadow:0 40px 80px rgba(40,30,20,.12)}
+@keyframes float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(18px,-22px,40px) scale(1.08)}}
+@keyframes tilt{0%,100%{transform:rotateX(16deg) rotateY(-10deg)}50%{transform:rotateX(8deg) rotateY(8deg)}}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:18px 14px 90px}
+header.hero{text-align:center;padding:18px 16px 20px;border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.22));border:1px solid var(--line);backdrop-filter:blur(18px) saturate(1.3);box-shadow:0 18px 50px rgba(40,30,20,.16),inset 0 1px 0 rgba(255,255,255,.7)}
+.logo{width:min(420px,92%);border-radius:16px;margin:0 auto 8px;display:block;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+.kicker{font-family:"Great Vibes",cursive;font-size:clamp(28px,7vw,44px)}
+h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(26px,6.4vw,46px);color:#0b6f8c;text-transform:lowercase;font-style:italic;text-shadow:0 8px 18px rgba(11,111,140,.18)}
+.subtitle{font-family:"Playfair Display",serif;font-style:italic;font-weight:700;font-size:18px}
+.toolbar,.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+button{background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.6);padding:8px 12px;border-radius:999px;cursor:pointer;font:inherit;backdrop-filter:blur(10px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+button.active{background:var(--cyan);color:#041018;font-weight:700}
+nav.cats{display:flex;gap:8px;overflow-x:auto;padding:16px 2px 8px;position:sticky;top:0;z-index:5;background:linear-gradient(180deg,rgba(244,239,230,.92),rgba(244,239,230,.65));backdrop-filter:blur(10px)}
+nav.cats button{white-space:nowrap;font-style:italic;font-weight:700;text-transform:lowercase}
+section.cat{margin:22px 0 36px}
+section.cat h2{font-family:"Playfair Display",serif;font-style:italic;font-weight:800;text-transform:lowercase;color:#0b6f8c;font-size:28px;border-bottom:1px solid rgba(11,111,140,.2);padding-bottom:6px;margin-bottom:14px}
+.note{color:var(--muted);font-size:13px;margin:-8px 0 12px;font-style:italic}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--glass);border:1px solid var(--line);display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px;border-radius:18px;backdrop-filter:blur(16px);box-shadow:0 14px 30px rgba(40,30,20,.12),inset 0 1px 0 rgba(255,255,255,.7)}
+.card img{width:92px;height:92px;object-fit:cover;border-radius:14px;box-shadow:0 8px 16px rgba(0,0,0,.15)}
+.card h3{font-size:16px;font-weight:800;text-transform:lowercase;font-style:italic;font-family:"Playfair Display",serif}
+.desc{color:var(--muted);font-size:13px;margin-top:4px}
+.price{margin-top:6px;color:#0b6f8c;font-weight:800;font-style:italic}
+.tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:11px;border:1px solid rgba(11,111,140,.25);color:#0b6f8c;background:rgba(255,255,255,.4);padding:2px 7px;border-radius:999px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px;font-style:italic}
+.legend{margin:18px 0;padding:12px;border:1px solid var(--line);border-radius:16px;font-size:13px;background:rgba(255,255,255,.35);backdrop-filter:blur(12px)}
+.admin{display:none;background:rgba(255,255,255,.4);border:1px dashed rgba(11,111,140,.35);padding:16px;margin:18px 0;border-radius:16px}
+.admin.open{display:block}
+.admin label{display:block;font-size:13px;margin:8px 0 4px}
+.admin input,.admin select,.admin textarea{width:100%;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.1);padding:8px;border-radius:10px}
+.danger{color:#7a2a2a}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="hero">
-      <div class="kicker">SPRITZERIA</div>
-      <h1>TESTE MATTE</h1>
-      <div class="subtitle" id="tagline">Menu digitale</div>
-      <div class="toolbar">
-        <button id="btn-it" class="active" onclick="setLang('it')">Italiano</button>
-        <button id="btn-en" onclick="setLang('en')">English</button>
-        <button onclick="document.getElementById('admin').classList.toggle('open')">Admin</button>
-      </div>
-    </header>
-    <div id="admin" class="admin">
-      <h3 style="color:var(--cyan);margin-bottom:8px">Gestione prodotti</h3>
-      <p style="font-size:13px;color:#aaa">Password: testematte</p>
-      <label>Password</label><input id="admin-pass" type="password" />
-      <label>Azione</label>
-      <select id="admin-action"><option value="add">Aggiungi</option><option value="remove">Rimuovi</option></select>
-      <label>Categoria</label><select id="admin-cat"></select>
-      <div id="add-fields">
-        <label>Nome IT</label><input id="f-name-it" />
-        <label>Nome EN</label><input id="f-name-en" />
-        <label>Descrizione IT</label><textarea id="f-desc-it" rows="2"></textarea>
-        <label>Descrizione EN</label><textarea id="f-desc-en" rows="2"></textarea>
-        <label>Prezzo</label><input id="f-price" />
-        <label>Allergeni IT</label><input id="f-all-it" placeholder="Glutine, Latte" />
-        <label>Allergeni EN</label><input id="f-all-en" placeholder="Gluten, Milk" />
-        <label>URL immagine</label><input id="f-img" />
-      </div>
-      <div id="remove-fields" style="display:none"><label>Prodotto</label><select id="admin-item"></select></div>
-      <div class="row">
-        <button onclick="applyAdmin()">Salva</button>
-        <button class="danger" onclick="resetMenu()">Ripristina originale</button>
-      </div>
-    </div>
-    <div class="legend" id="legend"></div>
-    <nav class="cats" id="cat-nav"></nav>
-    <main id="menu"></main>
-    <footer><div id="service"></div><p style="margin-top:8px">Spritzeria Teste Matte</p></footer>
-  </div>
-  <script src="menu-data.js"></script>
-  <script>
-    let lang="it";
-    let menu=loadMenu();
-    function loadMenu(){try{const r=localStorage.getItem("tm-menu-v2");return r?JSON.parse(r):structuredClone(window.DEFAULT_MENU)}catch(e){return structuredClone(window.DEFAULT_MENU)}}
-    function saveMenu(){localStorage.setItem("tm-menu-v2",JSON.stringify(menu))}
-    function setLang(l){
-      lang=l;
-      document.getElementById("btn-it").classList.toggle("active",l==="it");
-      document.getElementById("btn-en").classList.toggle("active",l==="en");
-      document.getElementById("tagline").textContent=l==="it"?"Menu digitale":"Digital menu";
-      document.getElementById("service").textContent=l==="it"?"Servizio al tavolo €2,00":"Table service €2.00";
-      document.getElementById("legend").innerHTML=l==="it"
-        ?"<b>Allergeni (indicativi):</b> Glutine, Crostacei, Uova, Pesce, Arachidi, Soia, Latte, Frutta a guscio, Sedano, Senape, Sesamo, Solfiti, Lupini, Molluschi. In caso di allergie gravi avvisare sempre il personale."
-        :"<b>Allergens (indicative):</b> Gluten, Crustaceans, Eggs, Fish, Peanuts, Soy, Milk, Tree nuts, Celery, Mustard, Sesame, Sulphites, Lupin, Molluscs. Always tell staff about severe allergies.";
-      render();
-    }
-    function render(){
-      const nav=document.getElementById("cat-nav"), main=document.getElementById("menu");
-      nav.innerHTML=""; main.innerHTML="";
-      const catSel=document.getElementById("admin-cat"), itemSel=document.getElementById("admin-item");
-      catSel.innerHTML=""; itemSel.innerHTML="";
-      menu.forEach(cat=>{
-        const b=document.createElement("button"); b.textContent=cat.title[lang];
-        b.onclick=()=>document.getElementById("cat-"+cat.id).scrollIntoView({behavior:"smooth"});
-        nav.appendChild(b);
-        const o=document.createElement("option"); o.value=cat.id; o.textContent=cat.title.it; catSel.appendChild(o);
-        cat.items.forEach(it=>{const x=document.createElement("option"); x.value=cat.id+"::"+it.id; x.textContent=cat.title.it+" — "+it.name.it; itemSel.appendChild(x)});
-        const sec=document.createElement("section"); sec.className="cat"; sec.id="cat-"+cat.id;
-        sec.innerHTML=`<h2>${cat.title[lang]}</h2>${cat.note?`<div class="note">${cat.note[lang]}</div>`:""}`;
-        const grid=document.createElement("div"); grid.className="grid";
-        cat.items.forEach(it=>{
-          const tags=(it.all&&it.all[lang]||[]).map(a=>`<span class="tag">${a}</span>`).join("");
-          const card=document.createElement("article"); card.className="card";
-          card.innerHTML=`<img src="${it.image||cat.image}" alt="${it.name[lang]}" loading="lazy"/><div><h3>${it.name[lang]}</h3>${it.desc&&it.desc[lang]?`<div class="desc">${it.desc[lang]}</div>`:""}${it.price?`<div class="price">${it.price}</div>`:""}${tags?`<div class="tags">${tags}</div>`:""}</div>`;
-          grid.appendChild(card);
-        });
-        sec.appendChild(grid); main.appendChild(sec);
-      });
-    }
-    document.getElementById("admin-action").onchange=e=>{
-      document.getElementById("add-fields").style.display=e.target.value==="add"?"block":"none";
-      document.getElementById("remove-fields").style.display=e.target.value==="remove"?"block":"none";
-    };
-    function applyAdmin(){
-      if(document.getElementById("admin-pass").value!=="testematte"){alert(lang==="it"?"Password errata":"Wrong password");return}
-      if(document.getElementById("admin-action").value==="add"){
-        const cat=menu.find(c=>c.id===document.getElementById("admin-cat").value);
-        const nameIt=document.getElementById("f-name-it").value.trim();
-        if(!nameIt){alert("Nome obbligatorio");return}
-        cat.items.push({id:"c"+Date.now(),name:{it:nameIt,en:document.getElementById("f-name-en").value.trim()||nameIt},desc:{it:document.getElementById("f-desc-it").value.trim(),en:document.getElementById("f-desc-en").value.trim()},price:document.getElementById("f-price").value.trim(),all:{it:document.getElementById("f-all-it").value.split(",").map(s=>s.trim()).filter(Boolean),en:document.getElementById("f-all-en").value.split(",").map(s=>s.trim()).filter(Boolean)},image:document.getElementById("f-img").value.trim()||undefined});
-      }else{
-        const [cid,iid]=document.getElementById("admin-item").value.split("::");
-        const cat=menu.find(c=>c.id===cid); cat.items=cat.items.filter(i=>i.id!==iid);
-      }
-      saveMenu(); render();
-    }
-    function resetMenu(){
-      if(document.getElementById("admin-pass").value!=="testematte"){alert("Password errata");return}
-      localStorage.removeItem("tm-menu-v2"); menu=structuredClone(window.DEFAULT_MENU); render();
-    }
-    setLang("it");
-  </script>
+<div class="scene"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><div class="panel3d"></div></div>
+<div class="wrap">
+<header class="hero">
+<img class="logo" alt="logo Teste Matte" src="logo-header.jpg" onerror="this.style.display='none'"/>
+<div class="kicker">spritzeria</div>
+<h1>teste matte</h1>
+<div class="subtitle" id="tagline">menu digitale</div>
+<div class="toolbar">
+<button id="btn-it" class="active" onclick="setLang('it')">italiano</button>
+<button id="btn-en" onclick="setLang('en')">english</button>
+<button onclick="document.getElementById('admin').classList.toggle('open')">admin</button>
+</div>
+</header>
+<div id="admin" class="admin">
+<h3 style="color:#0b6f8c;font-style:italic;text-transform:lowercase">gestione prodotti</h3>
+<p style="font-size:13px">password: testematte</p>
+<label>password</label><input id="admin-pass" type="password"/>
+<label>azione</label><select id="admin-action"><option value="add">aggiungi</option><option value="remove">rimuovi</option></select>
+<label>categoria</label><select id="admin-cat"></select>
+<div id="add-fields">
+<label>nome it</label><input id="f-name-it"/>
+<label>nome en</label><input id="f-name-en"/>
+<label>descrizione it</label><textarea id="f-desc-it" rows="2"></textarea>
+<label>descrizione en</label><textarea id="f-desc-en" rows="2"></textarea>
+<label>prezzo</label><input id="f-price"/>
+<label>allergeni it</label><input id="f-all-it"/>
+<label>allergeni en</label><input id="f-all-en"/>
+<label>url immagine</label><input id="f-img"/>
+</div>
+<div id="remove-fields" style="display:none"><label>prodotto</label><select id="admin-item"></select></div>
+<div class="row"><button onclick="applyAdmin()">salva</button><button class="danger" onclick="resetMenu()">ripristina originale</button></div>
+</div>
+<div class="legend" id="legend"></div>
+<nav class="cats" id="cat-nav"></nav>
+<main id="menu"></main>
+<footer><div id="service"></div><p style="margin-top:8px">spritzeria teste matte</p></footer>
+</div>
+<script src="menu-data.js"></script>
+<script>
+let lang="it"; let menu=loadMenu();
+function loadMenu(){try{const r=localStorage.getItem("tm-menu-v2");return r?JSON.parse(r):structuredClone(window.DEFAULT_MENU)}catch(e){return structuredClone(window.DEFAULT_MENU)}}
+function saveMenu(){localStorage.setItem("tm-menu-v2",JSON.stringify(menu))}
+function setLang(l){lang=l;document.getElementById("btn-it").classList.toggle("active",l==="it");document.getElementById("btn-en").classList.toggle("active",l==="en");document.getElementById("tagline").textContent=l==="it"?"menu digitale":"digital menu";document.getElementById("service").textContent=l==="it"?"servizio al tavolo \u20ac2,00":"table service \u20ac2.00";document.getElementById("legend").innerHTML=l==="it"?"<b>allergeni (indicativi):</b> glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, sesamo, solfiti, lupini, molluschi. in caso di allergie gravi avvisare il personale.":"<b>allergens (indicative):</b> gluten, crustaceans, eggs, fish, peanuts, soy, milk, tree nuts, celery, mustard, sesame, sulphites, lupin, molluscs. always tell staff about severe allergies.";render();}
+function render(){const nav=document.getElementById("cat-nav"),main=document.getElementById("menu");nav.innerHTML="";main.innerHTML="";const catSel=document.getElementById("admin-cat"),itemSel=document.getElementById("admin-item");catSel.innerHTML="";itemSel.innerHTML="";menu.forEach(cat=>{const b=document.createElement("button");b.textContent=(cat.title[lang]||"").toLowerCase();b.onclick=()=>document.getElementById("cat-"+cat.id).scrollIntoView({behavior:"smooth"});nav.appendChild(b);const o=document.createElement("option");o.value=cat.id;o.textContent=cat.title.it;catSel.appendChild(o);cat.items.forEach(it=>{const x=document.createElement("option");x.value=cat.id+"::"+it.id;x.textContent=cat.title.it+" \u2014 "+it.name.it;itemSel.appendChild(x)});const sec=document.createElement("section");sec.className="cat";sec.id="cat-"+cat.id;sec.innerHTML=`<h2>${(cat.title[lang]||"").toLowerCase()}</h2>${cat.note?`<div class=\"note\">${cat.note[lang]}</div>`:""}`;const grid=document.createElement("div");grid.className="grid";cat.items.forEach(it=>{const tags=(it.all&&it.all[lang]||[]).map(a=>`<span class=\"tag\">${a}</span>`).join("");const card=document.createElement("article");card.className="card";card.innerHTML=`<img src=\"${it.image||cat.image}\" alt=\"${it.name[lang]}\" loading=\"lazy\"/><div><h3>${(it.name[lang]||"").toLowerCase()}</h3>${it.desc&&it.desc[lang]?`<div class=\"desc\">${it.desc[lang]}</div>`:""}${it.price?`<div class=\"price\">${it.price}</div>`:""}${tags?`<div class=\"tags\">${tags}</div>`:""}</div>`;grid.appendChild(card);});sec.appendChild(grid);main.appendChild(sec);});}
+document.getElementById("admin-action").onchange=e=>{document.getElementById("add-fields").style.display=e.target.value==="add"?"block":"none";document.getElementById("remove-fields").style.display=e.target.value==="remove"?"block":"none";};
+function applyAdmin(){if(document.getElementById("admin-pass").value!=="testematte"){alert("Password errata");return;}if(document.getElementById("admin-action").value==="add"){const cat=menu.find(c=>c.id===document.getElementById("admin-cat").value);const nameIt=document.getElementById("f-name-it").value.trim();if(!nameIt){alert("Nome obbligatorio");return;}cat.items.push({id:"c"+Date.now(),name:{it:nameIt,en:document.getElementById("f-name-en").value.trim()||nameIt},desc:{it:document.getElementById("f-desc-it").value.trim(),en:document.getElementById("f-desc-en").value.trim()},price:document.getElementById("f-price").value.trim(),all:{it:document.getElementById("f-all-it").value.split(",").map(s=>s.trim()).filter(Boolean),en:document.getElementById("f-all-en").value.split(",").map(s=>s.trim()).filter(Boolean)},image:document.getElementById("f-img").value.trim()||undefined});}else{const [cid,iid]=document.getElementById("admin-item").value.split("::");const cat=menu.find(c=>c.id===cid);cat.items=cat.items.filter(i=>i.id!==iid);}saveMenu();render();}
+function resetMenu(){if(document.getElementById("admin-pass").value!=="testematte"){alert("Password errata");return;}localStorage.removeItem("tm-menu-v2");menu=structuredClone(window.DEFAULT_MENU);render();}
+setLang("it");
+</script>
 </body>
 </html>

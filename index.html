@@ -33,7 +33,9 @@ section.cat h2{font-family:"Playfair Display",serif;font-style:italic;font-weigh
 .note{color:var(--muted);font-size:13px;margin:-8px 0 12px;font-style:italic}
 .grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-.card{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px;border-radius:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.58);backdrop-filter:blur(22px);box-shadow:0 16px 36px rgba(40,30,20,.18),0 1px 0 rgba(255,255,255,.7) inset}
+.swipe{position:relative;overflow:hidden;border-radius:18px}
+.swipe-del{position:absolute;inset:0 0 0 auto;width:92px;background:rgba(180,40,40,.82);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-style:italic}
+.card{position:relative;display:grid;grid-template-columns:92px 1fr;gap:12px;padding:10px;border-radius:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.58);backdrop-filter:blur(22px);box-shadow:0 16px 36px rgba(40,30,20,.18),0 1px 0 rgba(255,255,255,.7) inset;transition:transform .2s ease}
 .card img{width:92px;height:92px;object-fit:cover;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.18)}
 .card h3{font-size:16px;font-weight:800;text-transform:lowercase;font-style:italic;font-family:"Playfair Display",serif}
 .desc{color:var(--muted);font-size:13px;margin-top:4px}
@@ -46,12 +48,12 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px;font-
 .staff h3{color:#0b6f8c;font-style:italic;text-transform:lowercase;margin-bottom:8px}
 .staff label{display:block;font-size:13px;margin:8px 0 4px;text-transform:lowercase}
 .staff input,.staff select,.staff textarea{width:100%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.55);padding:8px;border-radius:10px}
-.preview{width:88px;height:88px;object-fit:cover;border-radius:14px;margin-top:8px;display:none;box-shadow:0 8px 16px rgba(0,0,0,.16)}
-.plist{max-height:240px;overflow:auto;margin:10px 0;display:none}
-.plist button{display:block;width:100%;text-align:left;margin:6px 0;text-transform:lowercase;font-style:italic}
+.preview{width:88px;height:88px;object-fit:cover;border-radius:14px;margin-top:8px;display:none}
 .hidden{display:none!important}
 .danger{color:#7a2a2a}
 .tiny{opacity:.45;font-size:11px;letter-spacing:.12em;text-transform:lowercase;margin-top:18px}
+.hint{display:none;margin:8px auto 0;max-width:420px;padding:8px 12px;border-radius:999px;font-size:12px}
+body.admin-on .hint{display:block}
 </style>
 </head>
 <body>
@@ -74,9 +76,10 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px;font-
 <footer>
 <div id="service"></div>
 <p style="margin-top:8px">spritzeria teste matte</p>
+<div class="hint glass" id="admin-hint">admin: scorri la card verso sinistra per eliminare</div>
 <div class="tiny">area riservata</div>
 <div class="staff glass" id="gate">
-<label id="lbl-pass">password</label>
+<label>password</label>
 <input id="gate-pass" type="password" autocomplete="off"/>
 <div class="row"><button onclick="unlockStaff()">entra</button></div>
 <p id="gate-msg" style="font-size:12px;margin-top:8px"></p>
@@ -110,20 +113,79 @@ footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px;font-
 </div>
 <script src="menu-data.js"></script>
 <script>
-let lang="it"; let menu=loadMenu(); let pendingImg=""; let staff=false;
-function loadMenu(){try{const r=localStorage.getItem("tm-menu-v2");return r?JSON.parse(r):structuredClone(window.DEFAULT_MENU)}catch(e){return structuredClone(window.DEFAULT_MENU)}}
-function saveMenu(){try{localStorage.setItem("tm-menu-v2",JSON.stringify(menu))}catch(e){alert(lang==="it"?"Memoria piena: usa una foto piu piccola":"Storage full: use a smaller photo")}}
-function setLang(l){lang=l;document.getElementById("btn-it").classList.toggle("active",l==="it");document.getElementById("btn-en").classList.toggle("active",l==="en");document.getElementById("tagline").textContent=l==="it"?"menu digitale":"digital menu";document.getElementById("service").textContent=l==="it"?"servizio al tavolo \u20ac2,00":"table service \u20ac2.00";document.getElementById("legend").innerHTML=l==="it"?"<b>allergeni (indicativi):</b> glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, sesamo, solfiti, lupini, molluschi. in caso di allergie gravi avvisare il personale.":"<b>allergens (indicative):</b> gluten, crustaceans, eggs, fish, peanuts, soy, milk, tree nuts, celery, mustard, sesame, sulphites, lupin, molluscs. always tell staff about severe allergies.";render(); if(staff) fillStudio();}
-function render(){const nav=document.getElementById("cat-nav"),main=document.getElementById("menu");nav.innerHTML="";main.innerHTML="";menu.forEach(cat=>{const b=document.createElement("button");b.textContent=(cat.title[lang]||"").toLowerCase();b.onclick=()=>document.getElementById("cat-"+cat.id).scrollIntoView({behavior:"smooth"});nav.appendChild(b);const sec=document.createElement("section");sec.className="cat";sec.id="cat-"+cat.id;sec.innerHTML=`<h2>${(cat.title[lang]||"").toLowerCase()}</h2>${cat.note?`<div class=\"note\">${cat.note[lang]}</div>`:""}`;const grid=document.createElement("div");grid.className="grid";cat.items.forEach(it=>{const tags=(it.all&&it.all[lang]||[]).map(a=>`<span class=\"tag\">${a}</span>`).join("");const card=document.createElement("article");card.className="card";card.innerHTML=`<img src=\"${it.image||cat.image}\" alt=\"${it.name[lang]}\" loading=\"lazy\"/><div><h3>${(it.name[lang]||"").toLowerCase()}</h3>${it.desc&&it.desc[lang]?`<div class=\"desc\">${it.desc[lang]}</div>`:""}${it.price?`<div class=\"price\">${it.price}</div>`:""}${tags?`<div class=\"tags\">${tags}</div>`:""}</div>`;grid.appendChild(card);});sec.appendChild(grid);main.appendChild(sec);});}
-function unlockStaff(){if(document.getElementById("gate-pass").value!=="testematte"){document.getElementById("gate-msg").textContent=lang==="it"?"password errata":"wrong password";return;}staff=true;document.getElementById("gate").classList.add("hidden");document.getElementById("studio").classList.remove("hidden");fillStudio();document.getElementById("studio").scrollIntoView({behavior:"smooth"});}
-function lockStaff(){staff=false;document.getElementById("studio").classList.add("hidden");document.getElementById("gate").classList.remove("hidden");document.getElementById("gate-pass").value="";document.getElementById("gate-msg").textContent="";}
+const STORE="tm-menu-v3";
+let lang="it"; let pendingImg=""; let staff=false;
+function banned(catId,it){
+  const n=((it.name&&(it.name.it+" "+it.name.en))||"").toLowerCase();
+  if(it.id==="signorina"||n.includes("signorina")) return true;
+  if(catId==="tacos" && (n.includes("pinsa")||n.includes("signorina"))) return true;
+  return false;
+}
+function cleanMenu(list){list.forEach(c=>{c.items=c.items.filter(it=>!banned(c.id,it));});return list;}
+function loadMenu(){
+  try{
+    const raw=localStorage.getItem(STORE)||localStorage.getItem("tm-menu-v2");
+    const m=raw?JSON.parse(raw):structuredClone(window.DEFAULT_MENU);
+    return cleanMenu(m);
+  }catch(e){return structuredClone(window.DEFAULT_MENU)}
+}
+let menu=loadMenu(); saveMenu();
+function saveMenu(){try{localStorage.setItem(STORE,JSON.stringify(menu)); localStorage.removeItem("tm-menu-v2");}catch(e){alert("Memoria piena");}}
+function setLang(l){lang=l;document.getElementById("btn-it").classList.toggle("active",l==="it");document.getElementById("btn-en").classList.toggle("active",l==="en");document.getElementById("tagline").textContent=l==="it"?"menu digitale":"digital menu";document.getElementById("service").textContent=l==="it"?"servizio al tavolo \u20ac2,00":"table service \u20ac2.00";document.getElementById("legend").innerHTML=l==="it"?"<b>allergeni (indicativi):</b> glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, sesamo, solfiti, lupini, molluschi.":"<b>allergens (indicative):</b> gluten, crustaceans, eggs, fish, peanuts, soy, milk, tree nuts, celery, mustard, sesame, sulphites, lupin, molluscs.";render(); if(staff) fillStudio();}
+function render(){
+  const nav=document.getElementById("cat-nav"),main=document.getElementById("menu");
+  nav.innerHTML=""; main.innerHTML="";
+  menu.forEach(cat=>{
+    const b=document.createElement("button"); b.textContent=(cat.title[lang]||"").toLowerCase();
+    b.onclick=()=>document.getElementById("cat-"+cat.id).scrollIntoView({behavior:"smooth"}); nav.appendChild(b);
+    const sec=document.createElement("section"); sec.className="cat"; sec.id="cat-"+cat.id;
+    sec.innerHTML=`<h2>${(cat.title[lang]||"").toLowerCase()}</h2>${cat.note?`<div class="note">${cat.note[lang]}</div>`:""}`;
+    const grid=document.createElement("div"); grid.className="grid";
+    cat.items.forEach(it=>{
+      const tags=(it.all&&it.all[lang]||[]).map(a=>`<span class="tag">${a}</span>`).join("");
+      const wrap=document.createElement("div"); wrap.className="swipe";
+      wrap.innerHTML=`<div class="swipe-del">elimina</div>`;
+      const card=document.createElement("article"); card.className="card";
+      card.innerHTML=`<img src="${it.image||cat.image}" alt="${it.name[lang]}" loading="lazy"/><div><h3>${(it.name[lang]||"").toLowerCase()}</h3>${it.desc&&it.desc[lang]?`<div class="desc">${it.desc[lang]}</div>`:""}${it.price?`<div class="price">${it.price}</div>`:""}${tags?`<div class="tags">${tags}</div>`:""}</div>`;
+      wrap.appendChild(card); grid.appendChild(wrap);
+      enableSwipe(wrap,card,cat.id,it.id);
+    });
+    sec.appendChild(grid); main.appendChild(sec);
+  });
+}
+function enableSwipe(wrap,card,cid,iid){
+  let x0=null;
+  const start=e=>{if(!staff)return; x0=(e.touches?e.touches[0].clientX:e.clientX);};
+  const move=e=>{if(!staff||x0==null)return; const x=(e.touches?e.touches[0].clientX:e.clientX); const dx=Math.min(0,x-x0); card.style.transform=`translateX(${dx}px)`;};
+  const end=e=>{
+    if(!staff||x0==null)return;
+    const x=(e.changedTouches?e.changedTouches[0].clientX:e.clientX);
+    const dx=x-x0; x0=null;
+    if(dx<-70){removeProduct(cid,iid);}
+    else card.style.transform="translateX(0)";
+  };
+  wrap.addEventListener("touchstart",start,{passive:true});
+  wrap.addEventListener("touchmove",move,{passive:true});
+  wrap.addEventListener("touchend",end);
+  wrap.addEventListener("mousedown",start);
+  addEventListener("mousemove",move);
+  addEventListener("mouseup",end);
+}
+function removeProduct(cid,iid){
+  if(!staff)return;
+  const cat=menu.find(c=>c.id===cid); if(!cat)return;
+  cat.items=cat.items.filter(i=>i.id!==iid);
+  saveMenu(); render(); fillStudio();
+}
+function unlockStaff(){if(document.getElementById("gate-pass").value!=="testematte"){document.getElementById("gate-msg").textContent="password errata";return;}staff=true;document.body.classList.add("admin-on");document.getElementById("gate").classList.add("hidden");document.getElementById("studio").classList.remove("hidden");fillStudio();}
+function lockStaff(){staff=false;document.body.classList.remove("admin-on");document.getElementById("studio").classList.add("hidden");document.getElementById("gate").classList.remove("hidden");document.getElementById("gate-pass").value="";render();}
 function fillStudio(){const pick=document.getElementById("f-pick"),cat=document.getElementById("f-cat");pick.innerHTML="<option value=\"\">— nuovo —</option>";cat.innerHTML="";menu.forEach(c=>{const o=document.createElement("option");o.value=c.id;o.textContent=c.title.it;cat.appendChild(o);c.items.forEach(it=>{const x=document.createElement("option");x.value=c.id+"::"+it.id;x.textContent=c.title.it+" — "+it.name.it;pick.appendChild(x);});});}
-function currentItem(){const v=document.getElementById("f-pick").value;if(!v)return null;const [cid,iid]=v.split("::");const c=menu.find(x=>x.id===cid);return {cat:c,item:c.items.find(i=>i.id===iid)};}
+function currentItem(){const v=document.getElementById("f-pick").value;if(!v)return null;const [cid,iid]=v.split("::");const c=menu.find(x=>x.id===cid);if(!c)return null;const item=c.items.find(i=>i.id===iid);if(!item)return null;return {cat:c,item};}
 function loadItem(){pendingImg="";const prev=document.getElementById("f-preview");prev.style.display="none";const cur=currentItem();if(!cur){document.getElementById("f-name-it").value="";document.getElementById("f-name-en").value="";document.getElementById("f-desc-it").value="";document.getElementById("f-desc-en").value="";document.getElementById("f-price").value="";document.getElementById("f-all-it").value="";document.getElementById("f-all-en").value="";return;}const it=cur.item;document.getElementById("f-cat").value=cur.cat.id;document.getElementById("f-name-it").value=it.name.it||"";document.getElementById("f-name-en").value=it.name.en||"";document.getElementById("f-desc-it").value=(it.desc&&it.desc.it)||"";document.getElementById("f-desc-en").value=(it.desc&&it.desc.en)||"";document.getElementById("f-price").value=it.price||"";document.getElementById("f-all-it").value=(it.all&&it.all.it||[]).join(", ");document.getElementById("f-all-en").value=(it.all&&it.all.en||[]).join(", ");if(it.image){prev.src=it.image;prev.style.display="block";}}
 function readFields(){return {name:{it:document.getElementById("f-name-it").value.trim(),en:document.getElementById("f-name-en").value.trim()||document.getElementById("f-name-it").value.trim()},desc:{it:document.getElementById("f-desc-it").value.trim(),en:document.getElementById("f-desc-en").value.trim()},price:document.getElementById("f-price").value.trim(),all:{it:document.getElementById("f-all-it").value.split(",").map(s=>s.trim()).filter(Boolean),en:document.getElementById("f-all-en").value.split(",").map(s=>s.trim()).filter(Boolean)},image:pendingImg||undefined};}
-function saveItem(asNew){if(!staff)return;const nameIt=document.getElementById("f-name-it").value.trim();if(!nameIt){alert("Nome obbligatorio");return;}const data=readFields();const cid=document.getElementById("f-cat").value;const cat=menu.find(c=>c.id===cid);if(asNew||!document.getElementById("f-pick").value){if(!data.image){const cur=currentItem();data.image=(cur&&cur.item.image)||undefined;}cat.items.push(Object.assign({id:"c"+Date.now()},data));}else{const cur=currentItem();if(!cur)return;if(!data.image)data.image=cur.item.image;Object.assign(cur.item,data);if(cur.cat.id!==cid){cur.cat.items=cur.cat.items.filter(i=>i.id!==cur.item.id);cat.items.push(cur.item);}}saveMenu();render();fillStudio();alert(lang==="it"?"Prodotto aggiornato":"Product updated");}
-function deleteItem(){if(!staff)return;const cur=currentItem();if(!cur)return;if(!confirm(lang==="it"?"Eliminare questo prodotto?":"Delete this product?"))return;cur.cat.items=cur.cat.items.filter(i=>i.id!==cur.item.id);saveMenu();render();fillStudio();}
-function resetMenu(){if(!staff)return;localStorage.removeItem("tm-menu-v2");menu=structuredClone(window.DEFAULT_MENU);render();fillStudio();}
+function saveItem(asNew){if(!staff)return;const nameIt=document.getElementById("f-name-it").value.trim();if(!nameIt){alert("Nome obbligatorio");return;}const data=readFields();const cid=document.getElementById("f-cat").value;const cat=menu.find(c=>c.id===cid);if(asNew||!document.getElementById("f-pick").value){if(!data.image){const cur=currentItem();data.image=cur&&cur.item?cur.item.image:undefined;}cat.items.push(Object.assign({id:"c"+Date.now()},data));}else{const cur=currentItem();if(!cur)return;if(!data.image)data.image=cur.item.image;Object.assign(cur.item,data);if(cur.cat.id!==cid){cur.cat.items=cur.cat.items.filter(i=>i.id!==cur.item.id);cat.items.push(cur.item);}}saveMenu();render();fillStudio();}
+function deleteItem(){if(!staff)return;const cur=currentItem();if(!cur){alert("Scegli un prodotto dalla lista");return;}removeProduct(cur.cat.id,cur.item.id);}
+function resetMenu(){if(!staff)return;localStorage.removeItem(STORE);localStorage.removeItem("tm-menu-v2");menu=cleanMenu(structuredClone(window.DEFAULT_MENU));saveMenu();render();fillStudio();}
 document.getElementById("f-file").addEventListener("change",function(ev){const f=ev.target.files&&ev.target.files[0];if(!f)return;const img=new Image();const rd=new FileReader();rd.onload=function(){img.onload=function(){const m=360;let w=img.width,h=img.height;if(w>h&&w>m){h=h*m/w;w=m;}else if(h>m){w=w*m/h;h=m;}const cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(img,0,0,w,h);pendingImg=cv.toDataURL("image/jpeg",0.62);const p=document.getElementById("f-preview");p.src=pendingImg;p.style.display="block";};img.src=rd.result;};rd.readAsDataURL(f);});
 setLang("it");
 (function(){const c=document.getElementById("fx"),x=c.getContext("2d");let w,h,pts=[],t=0;function resize(){w=c.width=innerWidth;h=c.height=innerHeight;const n=Math.min(80,Math.floor(w*h/15000));pts=[];for(let i=0;i<n;i++)pts.push({x:Math.random()*w,y:Math.random()*h,z:Math.random()*2+0.4,s:0.4+Math.random()*1.2});}addEventListener("resize",resize);resize();function tick(){t+=0.0045;x.clearRect(0,0,w,h);for(const p of pts){const fx=Math.sin(p.y*0.004+t*1.6)+Math.cos(p.x*0.003-t);const fy=Math.cos(p.x*0.004-t*1.3)+Math.sin(p.y*0.003+t*0.8);p.x+=fx*p.s*0.85;p.y+=fy*p.s*0.85;if(p.x<-20)p.x=w+20;if(p.x>w+20)p.x=-20;if(p.y<-20)p.y=h+20;if(p.y>h+20)p.y=-20;}for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;if(d<11000){const o=1-d/11000;x.strokeStyle=`rgba(11,111,140,${0.09*o*(a.z+b.z)/2})`;x.lineWidth=0.7;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}}for(const p of pts){const r=1.2+p.z*2.2,g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,r*4);g.addColorStop(0,`rgba(255,255,255,${0.55*p.z})`);g.addColorStop(0.35,`rgba(90,214,245,${0.28*p.z})`);g.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,r*3.2,0,Math.PI*2);x.fill();}requestAnimationFrame(tick);}tick();})();
